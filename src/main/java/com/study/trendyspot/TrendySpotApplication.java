@@ -1,4 +1,4 @@
-package com.study.TrendySpot;
+package com.study.trendyspot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
