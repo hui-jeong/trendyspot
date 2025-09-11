@@ -3,7 +3,7 @@ package com.study.trendyspot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "app_user")
 public class AppUser {
@@ -17,4 +17,10 @@ public class AppUser {
 
     @Column(name = "nickname", length = 50)
     private String nickname;
+
+    @Builder
+    private AppUser(String email, String nickname){
+        this.email = email;
+        this.nickname = nickname;
+    }
 }

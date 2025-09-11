@@ -3,14 +3,12 @@ package com.study.trendyspot.entity;
 import com.study.trendyspot.util.HashUtil;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 @Entity
 @Table(name = "place")
-public class Place {
+public class Place extends BaseUpdatedOnly{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +29,13 @@ public class Place {
     @Column(name = "longitude", precision = 10, scale = 7)
     private BigDecimal longitude;
 
-    @Column(name = "updated_at", insertable = false, updatable = false)
-    private LocalDateTime updatedAt;
-
+    @Builder
+    private Place(String name, String address, BigDecimal latitude, BigDecimal longitude){
+        this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
     @PrePersist @PreUpdate
     private void computeHashIfNeeded() {
         if (name != null && (nameHash == null || nameHash.isBlank())) {

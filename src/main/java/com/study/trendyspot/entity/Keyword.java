@@ -3,12 +3,10 @@ package com.study.trendyspot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 @Entity
 @Table(name = "keyword_data")
-public class Keyword {
+public class Keyword extends BaseCreatedOnly{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +15,8 @@ public class Keyword {
     @Column(length = 200, nullable = false)
     private String text;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Builder
+    private Keyword(String text){
+        this.text = text;
+    }
 }

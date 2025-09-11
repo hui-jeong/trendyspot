@@ -3,15 +3,13 @@ package com.study.trendyspot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 @Entity
 @Table(
         name = "place_keyword",
         indexes = @Index(name = "idx_place_keyword_on_keys", columnList = "place_id, keyword_id")
 )
-public class PlaceKeyword {
+public class PlaceKeyword extends BaseUpdatedOnly{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +26,10 @@ public class PlaceKeyword {
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @Column(name = "updated_at", insertable = false, updatable = false)
-    private LocalDateTime updatedAt;
-
+    @Builder
+    private PlaceKeyword(Place place, Keyword keyword, float score){
+        this.place = place;
+        this.keyword = keyword;
+        this.score = score;
+    }
 }

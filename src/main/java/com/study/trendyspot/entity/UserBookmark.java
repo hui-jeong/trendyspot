@@ -3,9 +3,7 @@ package com.study.trendyspot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 @Entity
 @Table(
         name = "user_bookmark",
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
                 columnNames = {"user_id","place_id"}
         )
 )
-public class UserBookmark {
+public class UserBookmark extends BaseCreatedOnly{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,9 @@ public class UserBookmark {
     @JoinColumn(name = "place_id", nullable = false, foreignKey = @ForeignKey(name = "fk_user_bookmark_place"))
     private Place place;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createAt;
+    @Builder
+    private UserBookmark(AppUser user, Place place){
+        this.user = user;
+        this.place = place;
+    }
 }

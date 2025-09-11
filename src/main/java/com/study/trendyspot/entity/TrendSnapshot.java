@@ -3,9 +3,10 @@ package com.study.trendyspot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 @Entity
 @Table(
         name = "trend_snapshot",
@@ -14,7 +15,7 @@ import java.time.LocalDate;
                 columnNames = {"keyword_id","date_bucket","granularity"}
         )
 )
-public class TrendSnapshot {
+public class TrendSnapshot extends BaseCreatedOnly{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +36,14 @@ public class TrendSnapshot {
     private Integer indexValue;
 
     @Column(name = "fetched_at", nullable = false)
-    private LocalDate fetchedAt;
+    private Instant fetchedAt;
+
+    @Builder
+    private TrendSnapshot(Keyword keyword, LocalDate dateBucket, Granularity granularity, Integer indexValue, Instant fetchedAt){
+        this.keyword = keyword;
+        this.dateBucket = dateBucket;
+        this.granularity = granularity;
+        this.indexValue = indexValue;
+        this.fetchedAt = fetchedAt;
+    }
 }
