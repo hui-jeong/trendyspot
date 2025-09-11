@@ -8,7 +8,6 @@ public class TextNetUtils {
 
     private static final Pattern HTML_TAG = Pattern.compile("<[^>]+>");
 
-    //html 태크 제거
     public static String stripHtml(String s){
         if(s == null){
             return null;
@@ -27,7 +26,6 @@ public class TextNetUtils {
         }
     }
 
-    // URL host 추출
     public static String extractHost(String url) {
         if (url == null || url.isBlank()) return null;
         try {
@@ -35,5 +33,11 @@ public class TextNetUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static String safeSource(String hostFromLink, String fallbackUrl) {
+        if (hostFromLink != null) return hostFromLink;
+        try { return (fallbackUrl == null) ? null : new URI(fallbackUrl).getHost(); }
+        catch (Exception e) { return null; }
     }
 }

@@ -3,11 +3,14 @@ package com.study.trendyspot.service;
 import com.study.trendyspot.dto.PlaceDetailResponseDto;
 import com.study.trendyspot.dto.PlaceReviewsResponseDto;
 import com.study.trendyspot.dto.ReviewItemDto;
-import com.study.trendyspot.feign.NaverSearchClient;
+import com.study.trendyspot.feign.NaverSearchHelper;
+import com.study.trendyspot.feign.dto.NaverBlogSortType;
+import com.study.trendyspot.feign.dto.NaverLocalSortType;
+import com.study.trendyspot.mapper.ReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 import static com.study.trendyspot.util.TextNetUtils.*;
@@ -16,17 +19,17 @@ import static com.study.trendyspot.util.TextNetUtils.*;
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService{
 
-    private final NaverSearchClient client;
-
+    private final NaverSearchHelper naver;
+    private final ReviewMapper reviewMapper;
     @Override
     public PlaceDetailResponseDto getPlaceDetail(String query, Double latitude, Double longitude) {
 
-        var res = client.searchLocal(query, 5, 1, "sim");
-
-        if (res.items() == null || res.items().isEmpty()) {
+        var res = naver.searchLocal(query, 5, 1, NaverLocalSortType.RANDOM);
+        var items = res.items();
+        if (CollectionUtils.isEmpty(items)) {
             throw new IllegalStateException("장소를 찾을 수 없습니다.");
         }
-        var i = res.items().get(0);
+        var i = res.items().getFirst();
 
         return new PlaceDetailResponseDto(
                 stripHtml(i.title()),
@@ -44,36 +47,16 @@ public class PlaceServiceImpl implements PlaceService{
 
         var reviews = new ArrayList<ReviewItemDto>();
 
-        var blogs = client.searchBlog(query, blogN, 1, "sim");
-        if (blogs.items() != null) {
-            blogs.items().forEach(b -> reviews.add(new ReviewItemDto(
-                    "blog",
-                    stripHtml(b.title()),
-                    stripHtml(b.description()),
-                    b.bloggername(),
-                    b.link()
-            )));
+        var blogs = naver.searchBlog(query, blogN, 1, NaverBlogSortType.SIM);
+        if (!CollectionUtils.isEmpty(blogs.items())) {
+            blogs.items().stream().map(reviewMapper::fromBlog).forEach(reviews::add);
         }
 
-        var news = client.searchNews(query, newsN, 1, "date");
-        if (news.items() != null) {
-            news.items().forEach(n -> reviews.add(new ReviewItemDto(
-                    "news",
-                    stripHtml(n.title()),
-                    stripHtml(n.description()),
-                    // 링크가 없을 수도 있으니 originallink 보강
-                    safeSource(extractHost(n.link()), n.originallink()),
-                    n.link() != null ? n.link() : n.originallink()
-            )));
+        var news = naver.searchNews(query, newsN, 1, NaverBlogSortType.DATE);
+        if (!CollectionUtils.isEmpty(news.items())) {
+            news.items().stream().map(reviewMapper::fromNews).forEach(reviews::add);
         }
 
         return new PlaceReviewsResponseDto(query, reviews);
-    }
-
-    private static String safeSource(String hostFromLink, String fallbackUrl) {
-
-        if (hostFromLink != null) return hostFromLink;
-        try { return fallbackUrl == null ? null : new URI(fallbackUrl).getHost(); }
-        catch (Exception e) { return null; }
     }
 }
