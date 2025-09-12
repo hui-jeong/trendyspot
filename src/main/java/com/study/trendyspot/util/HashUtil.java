@@ -7,7 +7,6 @@ import java.util.HexFormat;
 public class HashUtil {
 
     public static String normalize(String raw){
-        //trim - 공백 1칸 - 소문자
         return raw.trim().replaceAll("\\s+"," ").toLowerCase();
     }
 
