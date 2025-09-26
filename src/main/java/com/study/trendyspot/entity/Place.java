@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Getter @NoArgsConstructor
 @Entity
 @Table(name = "place")
-public class Place extends BaseUpdatedOnly{
+public class Place extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

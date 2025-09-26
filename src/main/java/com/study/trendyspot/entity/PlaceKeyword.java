@@ -9,7 +9,7 @@ import lombok.*;
         name = "place_keyword",
         indexes = @Index(name = "idx_place_keyword_on_keys", columnList = "place_id, keyword_id")
 )
-public class PlaceKeyword extends BaseUpdatedOnly{
+public class PlaceKeyword extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
