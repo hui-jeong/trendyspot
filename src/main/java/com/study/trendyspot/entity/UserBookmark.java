@@ -12,7 +12,7 @@ import lombok.*;
                 columnNames = {"user_id","place_id"}
         )
 )
-public class UserBookmark extends BaseCreatedOnly{
+public class UserBookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

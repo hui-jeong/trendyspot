@@ -6,7 +6,7 @@ import lombok.*;
 @Getter @NoArgsConstructor
 @Entity
 @Table(name = "keyword_data")
-public class Keyword extends BaseCreatedOnly{
+public class Keyword extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

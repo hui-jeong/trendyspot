@@ -15,7 +15,7 @@ import java.time.LocalDate;
                 columnNames = {"keyword_id","date_bucket","granularity"}
         )
 )
-public class TrendSnapshot extends BaseCreatedOnly{
+public class TrendSnapshot extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,13 +33,13 @@ public class TrendSnapshot extends BaseCreatedOnly{
     private Granularity granularity = Granularity.DAILY;
 
     @Column(name = "index_value", nullable = false)
-    private Integer indexValue;
+    private Double indexValue;
 
     @Column(name = "fetched_at", nullable = false)
     private Instant fetchedAt;
 
     @Builder
-    private TrendSnapshot(Keyword keyword, LocalDate dateBucket, Granularity granularity, Integer indexValue, Instant fetchedAt){
+    private TrendSnapshot(Keyword keyword, LocalDate dateBucket, Granularity granularity, Double indexValue, Instant fetchedAt){
         this.keyword = keyword;
         this.dateBucket = dateBucket;
         this.granularity = granularity;
